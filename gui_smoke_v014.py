@@ -18,7 +18,7 @@ messagebox.showwarning=lambda *a,**k: msgs.append(('warning',a))
 messagebox.askyesno=lambda *a,**k: True
 root=tk.Tk()
 a=app.ExtractorApp(root);root.update()
-check('Fenster-Version v0.1.5', 'v0.1.5' in root.title())
+check('Fenster-Version v0.1.6', 'v0.1.6' in root.title())
 check('Linkeingabe startet leer', a.url.get() == '')
 with tempfile.TemporaryDirectory() as d:
     p=Path(d)
