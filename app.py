@@ -274,7 +274,7 @@ class ExtractorApp:
         if target.exists() and not messagebox.askyesno("Überschreiben?", f"Datei {target.name} existiert. Überschreiben?"):
             return
         try:
-            target.write_text("# Transkript\\n\\n" + self.text.strip() + "\\n", encoding="utf-8")
+            target.write_text("# Transkript\n\n" + self.text.strip() + "\n", encoding="utf-8")
         except OSError as exc:
             messagebox.showerror("Speichern fehlgeschlagen", str(exc))
             return
