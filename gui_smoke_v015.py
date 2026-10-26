@@ -15,7 +15,7 @@ def check(label,yes):
 messagebox.showerror=lambda *a,**k: None
 messagebox.showwarning=lambda *a,**k: None
 root=tk.Tk();ui=app.ExtractorApp(root);root.update()
-check('GUI v0.1.5 vorhanden','v0.1.5' in root.title())
+check('GUI v0.1.6 vorhanden','v0.1.6' in root.title())
 check('ASR-Schaltfläche vorhanden',str(ui.audio_button.cget('state'))=='normal')
 check('Whisper-Python-Wahl vorhanden',str(ui.python_button.cget('state'))=='normal')
 with tempfile.TemporaryDirectory() as tmp:
