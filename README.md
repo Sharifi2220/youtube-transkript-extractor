@@ -1,10 +1,18 @@
 # YouTube Transkript Extractor
 
-**Open-Source-Vorabversion v0.1.5-dev · Windows-first · lokal · kein Abo / keine Registrierung**
+**Entwicklungsstand v0.1.6-dev (Rechtsklick-/UX-Update in Prüfung) · Windows-first · lokal · kein Abo / keine Registrierung**
 
 Ein kleines Desktop-Programm, das vorhandene YouTube-Untertitel abruft, anzeigt, kopiert und als **TXT, SRT oder VTT** speichert. Als **separate optionale Funktion** lassen sich bereits rechtmäßig vorhandene lokale Audio-/Videodateien mit einer eigenen Whisper-Installation transkribieren. Die Verarbeitung läuft auf deinem PC – es gibt keinen Projekt-Cloudserver.
 
 **English:** A small, local-first Windows desktop app for retrieving available YouTube captions, copying text and exporting TXT/SRT/VTT. Optional, user-selected local audio/video transcription using an existing OpenAI Whisper installation (CPU or GPU). No bundled AI model, account, subscription or cloud service.
+
+## Windows-Bedienung (v0.1.6-dev im Entwicklungsbranch)
+
+Im YouTube-Linkfeld öffnet ein **Rechtsklick** die Befehle **Ausschneiden**, **Kopieren**, **Einfügen** und **Alles markieren**. Im **schreibgeschützten Transkript** stehen **Kopieren**, **Alles markieren** und **Gesamten Text kopieren** bereit. Die Auswahl kann außerdem über `Strg+C/X/V/A` bedient werden; das Kontextmenü ist über `Shift+F10` erreichbar. Im Transkript sind Ausschneiden/Einfügen bewusst gesperrt. Die Schaltflächen **Gesamtes Transkript kopieren**, **Als Markdown speichern** und **TXT/SRT/VTT speichern** befinden sich oberhalb der Vorschau.
+
+Die Markdown-Datei ist ein lokaler UTF-8-Export mit dem erkannten Transkripttext und dem Dateiformat `.md`, etwa für Obsidian. Der Export fragt vor dem Überschreiben einer bereits vorhandenen Datei. Es werden dafür keine zusätzlichen Pakete oder Netzwerkdienste benötigt.
+
+**Hinweis:** Diese Funktion ist derzeit im Feature-Branch zur Windows-Abnahme vorbereitet. Das Release `v0.1.5-dev` bleibt bis zur abgeschlossenen Windows-Prüfung unverändert. GUI-Smoketest auf einem Windows-Desktop: `python gui_smoke_context.py`. Kein YouTube-, Medien- oder GPU-Download im Test.
 
 ## Schnellstart auf Windows
 
