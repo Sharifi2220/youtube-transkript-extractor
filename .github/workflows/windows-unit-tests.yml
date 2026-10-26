@@ -22,4 +22,4 @@ jobs:
       - name: Unit tests (offline)
         run: python -m unittest discover -s tests -v
       - name: Syntax check
-        run: python -m compileall -q app.py transcript_core.py local_asr.py tests
+        run: python -m compileall -q app.py transcript_core.py local_asr.py windows_context_menu.py gui_smoke_context.py gui_smoke_v014.py gui_smoke_v015.py tests
