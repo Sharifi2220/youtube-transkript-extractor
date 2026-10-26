@@ -144,9 +144,9 @@ class AsrTests(unittest.TestCase):
 
     def test_output_folder_project_relative(self):
         unpacked=self.root/'Unpacked';unpacked.mkdir()
-        self.assertEqual(a.output_folder(unpacked),unpacked/'TRANSKRIPTE_TESTAUSGABEN')
+        self.assertEqual(a.output_folder(unpacked),unpacked.resolve()/'TRANSKRIPTE_TESTAUSGABEN')
         nested=self.root/'workspace'/'Unpacked';nested.mkdir(parents=True)
-        self.assertEqual(a.output_folder(nested),nested/'TRANSKRIPTE_TESTAUSGABEN')
+        self.assertEqual(a.output_folder(nested),nested.resolve()/'TRANSKRIPTE_TESTAUSGABEN')
 
     def test_payload_serializable_and_exact(self):
         r,_=self.run_fake()
