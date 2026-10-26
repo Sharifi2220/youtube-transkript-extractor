@@ -1,10 +1,18 @@
 # YouTube Transkript Extractor
 
-**Open-Source-Vorabversion v0.1.5-dev · Windows-first · lokal · kein Abo / keine Registrierung**
+**Öffentliche Quellcode-Vorabversion v0.1.6-dev · Windows-first · lokal · kein Abo / keine Registrierung**
 
 Ein kleines Desktop-Programm, das vorhandene YouTube-Untertitel abruft, anzeigt, kopiert und als **TXT, SRT oder VTT** speichert. Als **separate optionale Funktion** lassen sich bereits rechtmäßig vorhandene lokale Audio-/Videodateien mit einer eigenen Whisper-Installation transkribieren. Die Verarbeitung läuft auf deinem PC – es gibt keinen Projekt-Cloudserver.
 
 **English:** A small, local-first Windows desktop app for retrieving available YouTube captions, copying text and exporting TXT/SRT/VTT. Optional, user-selected local audio/video transcription using an existing OpenAI Whisper installation (CPU or GPU). No bundled AI model, account, subscription or cloud service.
+
+## Windows-Bedienung (v0.1.6-dev)
+
+Im YouTube-Linkfeld öffnet ein **Rechtsklick** die Befehle **Ausschneiden**, **Kopieren**, **Einfügen** und **Alles markieren**. Im **schreibgeschützten Transkript** stehen **Kopieren**, **Alles markieren** und **Gesamten Text kopieren** bereit. Die Auswahl kann außerdem über `Strg+C/X/V/A` bedient werden; das Kontextmenü ist über `Shift+F10` erreichbar. Im Transkript sind Ausschneiden/Einfügen bewusst gesperrt. Die Schaltflächen **Gesamtes Transkript kopieren**, **Als Markdown speichern** und **TXT/SRT/VTT speichern** befinden sich oberhalb der Vorschau.
+
+Die Markdown-Datei ist ein lokaler UTF-8-Export mit dem erkannten Transkripttext und dem Dateiformat `.md`, etwa für Obsidian. Der Export fragt vor dem Überschreiben einer bereits vorhandenen Datei. Es werden dafür keine zusätzlichen Pakete oder Netzwerkdienste benötigt.
+
+**Hinweis:** `v0.1.6-dev` ist ein frühes öffentliches Quellcode-Prerelease. Die abschließende manuelle Windows-Abnahme mit Maus und Tastatur ist noch nicht abgeschlossen. Der synthetische GUI-Smoke läuft mit `python gui_smoke_context.py`; er ruft weder YouTube noch Medien oder GPU-Modelle ab. Die bestehende Windows-Installation und der alte Tag `v0.1.5-dev` bleiben unverändert.
 
 ## Schnellstart auf Windows
 
@@ -37,7 +45,7 @@ Die Ergebnisse heißen `<Dateiname>.asr.txt`, `.asr.srt`, `.asr.vtt` und `.asr.j
 
 ```powershell
 python -m unittest discover -s tests -v
-python -m compileall -q app.py transcript_core.py local_asr.py tests
+python -m compileall -q app.py transcript_core.py local_asr.py windows_context_menu.py gui_smoke_context.py gui_smoke_v014.py gui_smoke_v015.py tests
 ```
 
 GUI-Smokes (`python gui_smoke_v014.py` und `python gui_smoke_v015.py`) brauchen eine grafische Windows-/Tk-Umgebung. Es gibt keinen automatisierten YouTube-Livezugriff in Tests oder CI. Der GitHub-Workflow führt nur Unit-Tests und Syntaxprüfungen aus.
@@ -52,7 +60,7 @@ Beiträge und Fehlermeldungen sind willkommen – siehe `CONTRIBUTING.md` und `S
 
 ## English guide
 
-**YouTube Transcript Extractor — local-first captions, one-click copy, TXT/SRT/VTT export.** This is an early Windows source-code preview, not an installer or `.exe`. It retrieves captions when a video makes them available. A separate optional mode transcribes one user-selected local media file with an existing Whisper setup.
+**YouTube Transcript Extractor — local-first captions, Windows context menus, one-click copy, Markdown/TXT/SRT/VTT export.** This is an early Windows source-code prerelease, not an installer or `.exe`. The final manual Windows mouse-and-keyboard acceptance test is not yet complete. It retrieves captions when a video makes them available. A separate optional mode transcribes one user-selected local media file with an existing Whisper setup.
 
 ### Install and use on Windows
 
@@ -75,6 +83,7 @@ python -m unittest discover -s tests -v
 python -m compileall -q app.py transcript_core.py local_asr.py tests
 python gui_smoke_v014.py
 python gui_smoke_v015.py
+python gui_smoke_context.py
 ```
 
 The GUI smoke tests need a graphical Tk session and use synthetic fixtures. CI runs unit tests and syntax checks on Windows; it does not fetch live YouTube captions or process real media. Caption retrieval contacts YouTube from your computer. Local Whisper mode processes the chosen file on your computer; this project operates no cloud server. Avoid posting private transcripts, media or local paths in public issues. Use the repository's GitHub Issues tab for ordinary bugs and `SECURITY.md` for sensitive reports. Contributions are described in `CONTRIBUTING.md`. Project code is MIT-licensed; third-party tools keep their own licenses (`THIRD_PARTY_NOTICES.md`).
