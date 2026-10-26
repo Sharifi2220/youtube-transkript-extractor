@@ -11,6 +11,7 @@ import sys
 import tkinter as tk
 from tkinter import ttk, filedialog, messagebox
 
+from windows_context_menu import ContextMenu
 from local_asr import ASR_MARKER, ai_text, AsrTranscript, output_folder, verify_source
 from transcript_core import (CaptionOption, Cue, VideoInfo, TranscriptError,
     fetch_subtitles, get_video_info, load_subtitle_file_with_encoding,
@@ -19,7 +20,7 @@ from transcript_core import (CaptionOption, Cue, VideoInfo, TranscriptError,
 class ExtractorApp:
     def __init__(self, root: tk.Tk):
         self.root = root
-        root.title("YouTube-Transkript-Extractor v0.1.5-dev")
+        root.title("YouTube-Transkript-Extractor v0.1.6-dev")
         root.geometry("900x680")
         root.minsize(710, 520)
         self.events: Queue = Queue()
@@ -43,7 +44,10 @@ class ExtractorApp:
         ttk.Label(pane, text="Untertitel zuerst · optional lokale Whisper-Audiotranskription · kein YouTube-Audiodownload").pack(anchor="w")
         top = ttk.Frame(pane); top.pack(fill="x", pady=(14, 8))
         ttk.Label(top, text="Video:").pack(side="left")
-        ttk.Entry(top, textvariable=self.url).pack(side="left", fill="x", expand=True, padx=8)
+        self.url_entry = ttk.Entry(top, textvariable=self.url)
+        self.url_entry.pack(side="left", fill="x", expand=True, padx=8)
+        self.url_entry.configure(exportselection=False)
+        self.url_context = ContextMenu(self.url_entry)
         one = ttk.Frame(pane); one.pack(fill="x", pady=(0, 9))
         self.quick_button = ttk.Button(one, text="Link → Transkript kopieren", command=self.quick)
         self.quick_button.pack(side="left")
@@ -62,16 +66,20 @@ class ExtractorApp:
         self.tracks.pack(side="left", padx=8)
         self.fetch_button = ttk.Button(second, text="Gewählte Spur laden", command=self.fetch, state="disabled")
         self.fetch_button.pack(side="left")
+        # These actions remain visible above the scrolling transcript pane.
+        btns = ttk.Frame(pane); btns.pack(fill="x", pady=(0, 8))
+        self.copy_button = ttk.Button(btns, text="Gesamtes Transkript kopieren", command=self.copy, state="disabled")
+        self.copy_button.pack(side="left")
+        self.markdown_button = ttk.Button(btns, text="Als Markdown speichern", command=self.save_markdown, state="disabled")
+        self.markdown_button.pack(side="left", padx=8)
+        self.save_button = ttk.Button(btns, text="Speichern (TXT / SRT / VTT)", command=self.save, state="disabled")
+        self.save_button.pack(side="left")
         body = ttk.Frame(pane); body.pack(fill="both", expand=True)
         self.preview = tk.Text(body, wrap="word", font=("Segoe UI", 10), undo=False)
         sb = ttk.Scrollbar(body, orient="vertical", command=self.preview.yview)
-        self.preview.configure(yscrollcommand=sb.set, state="disabled")
+        self.preview.configure(yscrollcommand=sb.set, state="disabled", exportselection=False)
+        self.preview_context = ContextMenu(self.preview, readonly=True)
         self.preview.pack(side="left", fill="both", expand=True); sb.pack(side="left", fill="y")
-        btns = ttk.Frame(pane); btns.pack(fill="x", pady=8)
-        self.copy_button = ttk.Button(btns, text="Gesamten Text kopieren", command=self.copy, state="disabled")
-        self.copy_button.pack(side="left")
-        self.save_button = ttk.Button(btns, text="Speichern (TXT / SRT / VTT)", command=self.save, state="disabled")
-        self.save_button.pack(side="left", padx=8)
         ttk.Label(pane, textvariable=self.status, wraplength=850, foreground="#355681").pack(fill="x", anchor="w")
 
     def _show_preview(self, content: str):
@@ -91,6 +99,7 @@ class ExtractorApp:
         self.tracks.config(state="disabled" if busy else "readonly")
         self.copy_button.config(state="normal" if not busy and self.cues else "disabled")
         self.save_button.config(state="normal" if not busy and self.cues else "disabled")
+        self.markdown_button.config(state="normal" if not busy and self.cues else "disabled")
 
     def _worker(self, action: str, fn, *args):
         def run():
@@ -249,6 +258,27 @@ class ExtractorApp:
         if not self.cues: return
         self.root.clipboard_clear(); self.root.clipboard_append(self.text)
         self.status.set("Gesamtes KI-taugliches Transkript in Zwischenablage kopiert.")
+
+    def save_markdown(self):
+        if not self.cues:
+            return
+        path = filedialog.asksaveasfilename(title="Transkript als Markdown speichern",
+            defaultextension=".md", filetypes=[("Markdown", "*.md")],
+            initialfile=f"transkript_{self.info.video_id if self.info else 'lokal'}.md")
+        if not path:
+            return
+        target = Path(path)
+        if target.suffix.lower() != ".md":
+            messagebox.showerror("Format", "Bitte eine Markdown-Datei (.md) auswählen.")
+            return
+        if target.exists() and not messagebox.askyesno("Überschreiben?", f"Datei {target.name} existiert. Überschreiben?"):
+            return
+        try:
+            target.write_text("# Transkript\\n\\n" + self.text.strip() + "\\n", encoding="utf-8")
+        except OSError as exc:
+            messagebox.showerror("Speichern fehlgeschlagen", str(exc))
+            return
+        self.status.set(f"Markdown gespeichert: {target}")
 
     def save(self):
         if not self.cues: return
